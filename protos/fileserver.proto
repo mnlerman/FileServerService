@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package fileserver;
+
+// The greeting service definition.
+service FileServer {
+  // Returns the entire contents of the file
+  rpc GetFile (RequestPath) returns (ResponseFile) {}
+
+  // Streams the file line by line
+  rpc StreamFile (RequestPath) returns (stream ResponseFile) {}
+}
+
+// The path to the requested file
+message RequestPath {
+  string path = 1;
+}
+
+// The file requested
+message ResponseFile {
+  string file_path = 1;
+  string contents = 2;
+}
