@@ -20,8 +20,8 @@ def fileserver(path: str = ''):
 
         file_request = fileserver_pb2.RequestPath(path=f'{base_dir}/{path}')
         response_file = stub.GetFile(file_request)
-
-        return f'contents of {response_file.file_path}:\n{response_file.contents}'
+        contents = response_file.contents.replace("\n", "<br/>")
+        return f'contents of {response_file.file_path}:<br/>{contents}'
 
     #return redirect(f'http://localhost:8081/thredds/fileServer/{path}')
 
