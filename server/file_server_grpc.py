@@ -22,10 +22,10 @@ class FileServerServicer(fileserver_pb2_grpc.FileServerServicer):
                 yield response
 
 
-def serve():
+def serve(port: int = 5005):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     fileserver_pb2_grpc.add_FileServerServicer_to_server(FileServerServicer(), server)
-    server.add_insecure_port("localhost:5005")
+    server.add_insecure_port(f'localhost:{port}')
     server.start()
     server.wait_for_termination()
 
