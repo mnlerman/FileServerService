@@ -1,6 +1,6 @@
 import grpc
 from flask import Flask, request, redirect
-
+import os
 import fileserver_pb2
 import fileserver_pb2_grpc
 
@@ -9,21 +9,20 @@ app = Flask(__name__)
 
 @app.route('/fileserver/', methods=['GET'])
 @app.route('/fileserver/<path:path>', methods=['GET'])
-def fileserver(path: str = ''):
+def get_file(path: str = ''):
     base_dir = '..'
-    path = path
+    request_path = path
     if len(path.strip()) == 0:
         return 'No file path to serve'
 
     with grpc.insecure_channel('localhost:5005') as channel:
         stub = fileserver_pb2_grpc.FileServerStub(channel)
 
-        file_request = fileserver_pb2.RequestPath(path=f'{base_dir}/{path}')
+        file_request = fileserver_pb2.RequestPath(path=os.path.join(base_dir, request_path))
         response_file = stub.GetFile(file_request)
 
-        return f'contents of {response_file.file_path}:\n{response_file.contents}'
+        return response_file.contents
 
-    #return redirect(f'http://localhost:8081/thredds/fileServer/{path}')
 
 
 if __name__ == '__main__':
